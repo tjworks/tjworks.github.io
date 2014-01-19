@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>angoose-node.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="angoose-angular.html">
+                angoose-angular.js
+              </a>
+            
+              
+              <a class="source" href="angoose-client.html">
+                angoose-client.js
+              </a>
+            
+              
+              <a class="source" href="angoose-jquery.html">
+                angoose-jquery.js
+              </a>
+            
+              
+              <a class="source" href="angoose-node.html">
+                angoose-node.js
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>angoose-node.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="comment">/** Angoose Client for Node.js */</span>
+
+(<span class="function"><span class="keyword">function</span><span class="params">()</span>{</span>
+    <span class="keyword">if</span>(<span class="keyword">typeof</span> exports ==<span class="string">"undefined"</span>) <span class="keyword">return</span>;
+    console.log(<span class="string">"##### Angoose node client Loading"</span>);
+    <span class="keyword">var</span> request = require(<span class="string">'request'</span>);
+    <span class="keyword">var</span> Q  = require(<span class="string">"q"</span>);
+    <span class="keyword">var</span> _ = require(<span class="string">"underscore"</span>)
+    <span class="keyword">var</span> HTTP_BASE =  <span class="string">"http://localhost:9988"</span>; <span class="comment">// +( AngooseClient.configs.httpPort ?(":"+ AngooseClient.config.httpPort):"");</span>
+    <span class="keyword">var</span> $httpDelegate = {}
+    <span class="keyword">var</span> methods = [<span class="string">'get'</span>, <span class="string">'post'</span>,<span class="string">'put'</span>,<span class="string">'delete'</span>];</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>create deletage functions over request module</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="keyword">var</span> createFunc = <span class="function"><span class="keyword">function</span><span class="params">(method)</span>{</span>
+        <span class="keyword">return</span> <span class="function"><span class="keyword">function</span><span class="params">(url, data, callback)</span>{</span>
+            console.log(<span class="string">"Sending thtp request"</span>, url)
+            <span class="keyword">var</span> options = {url:  HTTP_BASE + url, method:method, jar:<span class="literal">true</span> , json:<span class="literal">true</span>};
+            <span class="keyword">if</span>(data &amp;&amp; <span class="keyword">typeof</span>(data) != <span class="string">'function'</span> ) 
+                options.json = data;
+            <span class="keyword">else</span>{
+                callback = data;
+            } 
+            <span class="keyword">var</span> deferred = Q.defer();
+            request(options, <span class="function"><span class="keyword">function</span><span class="params">(err, res, body)</span>{</span>
+                <span class="keyword">if</span>(err) 
+                    deferred.reject(<span class="keyword">new</span> Error(err));
+                <span class="keyword">else</span>
+                    deferred.resolve(body);
+                <span class="keyword">if</span>(callback) callback(err, body);
+            });
+            <span class="keyword">return</span> deferred.promise;
+        }
+    }
+    _.each(methods, <span class="function"><span class="keyword">function</span><span class="params">(method)</span>{</span>
+        $httpDelegate[method] = createFunc(method);
+    })
+       
+    AngooseClient.init({
+        http: $httpDelegate,
+        promise:Q
+    });     
+})()</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

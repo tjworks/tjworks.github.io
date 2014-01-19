@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>angoose-angular.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="angoose-angular.html">
+                angoose-angular.js
+              </a>
+            
+              
+              <a class="source" href="angoose-client.html">
+                angoose-client.js
+              </a>
+            
+              
+              <a class="source" href="angoose-jquery.html">
+                angoose-jquery.js
+              </a>
+            
+              
+              <a class="source" href="angoose-node.html">
+                angoose-node.js
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>angoose-angular.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="comment">/****** Angular Adapter for Angoose Client *******/</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Angular client for Angoose automatically register the model and service classes as angular injectables. 
+For instance, with the <code>SampleUser</code> model, you can inject in your controller:</p>
+<pre><code> angular.module(&#39;myapp&#39;, [&#39;angoose.client&#39;]).controller(&#39;MyCtroller&#39;, function($scope, SampleUser){
+         $scope.users = SampleUser.$query({&#39;status&#39;:&#39;active&#39;});
+   })      </code></pre>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>(<span class="function"><span class="keyword">function</span><span class="params">()</span>{</span>
+    <span class="keyword">if</span>(<span class="keyword">typeof</span> angular ==<span class="string">'undefined'</span>) <span class="keyword">return</span>;
+    console.log(<span class="string">"##### Angoose Client Loading"</span>);
+    <span class="keyword">var</span> angularModule =  angular.module(<span class="string">"angoose.client"</span>, []);
+    AngooseClient.client=<span class="string">'angular'</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p><strong> angoose </strong></p>
+<p> You may require the <code>angoose</code> client from anywhere in angular</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    angularModule.factory(<span class="string">'angoose'</span>, <span class="function"><span class="keyword">function</span><span class="params">($http, $q)</span>{</span>
+            <span class="keyword">var</span> myQ = addDoneMethod($q);
+            AngooseClient.init({
+                http:angularHttpWrapper($http, myQ),
+                promise: myQ
+            });
+            <span class="keyword">return</span> AngooseClient;
+    })
+    <span class="function"><span class="keyword">function</span> <span class="title">factoryFunc</span><span class="params">(modelName)</span>{</span>
+        console.log(<span class="string">"Create factory for model "</span>+ modelName)
+        angularModule.factory(modelName , <span class="function"><span class="keyword">function</span><span class="params">($http, $q, $rootScope, $timeout, angoose)</span>{</span>
+            <span class="keyword">var</span> acModel = AngooseClient.model(modelName);
+            resourceAdapt(acModel, $rootScope, $timeout);
+            <span class="keyword">return</span> acModel;
+        });
+    }
+    angular.forEach( AngooseClient.modelNames(), factoryFunc );
+
+    <span class="function"><span class="keyword">function</span> <span class="title">addDoneMethod</span><span class="params">($q)</span>{</span>
+        <span class="keyword">var</span> myQ = angular.extend({}, $q)
+        myQ.defer = <span class="function"><span class="keyword">function</span><span class="params">()</span>{</span>
+            <span class="keyword">var</span> out = $q.defer.apply($q, arguments);
+            <span class="keyword">if</span>(out.promise.done) <span class="keyword">return</span> out;
+            out.promise.done = <span class="function"><span class="keyword">function</span><span class="params">(successCallback, errorCallback)</span>{</span>
+                out.promise.then(successCallback, errorCallback);
+            }
+            <span class="keyword">return</span> out;
+        }
+        <span class="keyword">return</span> myQ;
+    }
+    <span class="function"><span class="keyword">function</span> <span class="title">angularHttpWrapper</span><span class="params">($http, $q)</span>{</span>
+        <span class="keyword">var</span> ret = {};
+        ret.post = <span class="function"><span class="keyword">function</span><span class="params">()</span>{</span>
+            <span class="keyword">var</span> deferred = $q.defer();
+            $http.post.apply($http, arguments).success(<span class="function"><span class="keyword">function</span><span class="params">(data)</span>{</span>
+                deferred.resolve(  data );
+            }).error(<span class="function"><span class="keyword">function</span><span class="params">(err)</span>{</span>
+                deferred.reject(err);
+            });
+            <span class="keyword">return</span> deferred.promise;
+        }
+        <span class="keyword">return</span> ret;
+    }
+    <span class="function"><span class="keyword">function</span> <span class="title">resourceAdapt</span><span class="params">(modelClass, $rootScope, $timeout)</span>{</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>now adpat to angular resource</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        modelClass.__proto__.$get= <span class="function"><span class="keyword">function</span><span class="params">()</span>{</span>
+            <span class="keyword">if</span>(!modelClass.findOne) <span class="keyword">throw</span> <span class="string">"Model does not support findOne operation"</span>;
+            <span class="keyword">var</span> modelInstance = <span class="keyword">new</span> modelClass();
+            $timeout(<span class="function"><span class="keyword">function</span><span class="params">()</span>{</span>
+                modelClass.findOne.apply(modelClass, arguments).done(<span class="function"><span class="keyword">function</span><span class="params">(object)</span>{</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>the return data should be a model instance</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                    modelInstance.mergeData(object);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>$rootScope.$digest();</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                    console.log(<span class="string">"Copied server data to placeholder"</span>, modelInstance)
+                }, <span class="function"><span class="keyword">function</span><span class="params">(err)</span>{</span>
+                    console.error(<span class="string">"Unable to load server data"</span>, err);
+                });    
+            }, <span class="number">1</span>) ;
+            
+            <span class="keyword">return</span> modelInstance;
+        };
+        modelClass.__proto__.$query=<span class="function"><span class="keyword">function</span><span class="params">()</span>{</span>
+            <span class="keyword">if</span>(!modelClass.find) <span class="keyword">throw</span> <span class="string">"Model does not support find operation"</span>;
+            <span class="keyword">var</span> models = [];
+            modelClass.find.apply(modelClass, arguments).done(<span class="function"><span class="keyword">function</span><span class="params">(retModels)</span>{</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>the return data should be a list of models</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                models.length = <span class="number">0</span>;
+                <span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>; retModels &amp;&amp; retModels.length&gt;i; i++)
+                    models[i] = retModels[i];</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>$rootScope.$digest();</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                console.log(<span class="string">"Copied server data to placeholder"</span>)
+            }, <span class="function"><span class="keyword">function</span><span class="params">(err)</span>{</span>
+                console.error(<span class="string">"Unable to load server data"</span>, err);
+            });
+            <span class="keyword">return</span> models;
+        };
+    }
+})();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>testing functions</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="function"><span class="keyword">function</span> <span class="title">$anget</span><span class="params">(serviceName)</span>{</span>
+    <span class="keyword">return</span> angular.element(document).injector().get(serviceName)
+}</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
