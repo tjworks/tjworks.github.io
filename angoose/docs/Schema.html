@@ -29,6 +29,11 @@
               </a>
             
               
+              <a class="source" href="Pipeline.html">
+                Pipeline.js
+              </a>
+            
+              
               <a class="source" href="Principal.html">
                 Principal.js
               </a>
@@ -108,7 +113,7 @@
         <span class="keyword">if</span>(!schema.methods[m]) 
             schema.methods[m]= <span class="function"><span class="keyword">function</span> <span class="title">remote</span><span class="params">()</span>{</span>};     
     });
-    <span class="keyword">var</span> staticMethods = <span class="string">"populate,find,findOne,findById,findByIdAndRemove,findByIdAndUpdate,findOneAndRemove,findOneAndUpdate,update,remove,count"</span>;
+    <span class="keyword">var</span> staticMethods = <span class="string">"populate,find,findOne,findById,findByIdAndRemove,findByIdAndUpdate,findOneAndRemove,findOneAndUpdate,update,remove,count,geoNear,geoSearch"</span>;
     staticMethods.split(<span class="string">","</span>).forEach(<span class="function"><span class="keyword">function</span><span class="params">(m)</span>{</span>
         m = m.replace(<span class="regexp">/\s+/g</span>, <span class="string">''</span>);
         schema.statics[m] || (schema.statics[m]= <span class="function"><span class="keyword">function</span> <span class="title">remote</span><span class="params">()</span>{</span>} );     
@@ -205,11 +210,19 @@
     <span class="keyword">return</span> <span class="literal">null</span>;
 }
 
+<span class="keyword">var</span> fnPattern = <span class="regexp">/^function\s+([^\(]*)/i</span>;
+<span class="function"><span class="keyword">function</span> <span class="title">getFunctionName</span><span class="params">(fn)</span>{</span>
+    <span class="keyword">var</span> funcBody = fn.toString();
+    <span class="keyword">if</span>(!funcBody) <span class="keyword">return</span> <span class="literal">null</span>;
+    <span class="keyword">var</span> matcher = fnPattern.exec(funcBody);
+    <span class="keyword">return</span> matcher? matcher[<span class="number">1</span>]: <span class="string">''</span>; <span class="comment">//default is remote</span>
+}
 module.exports = {
     getFunctionAnnotation:getFunctionAnnotation,
     stringify: stringify,
     parseDeclaredArguments:parseDeclaredArguments,
-    getReference:getReference
+    getReference:getReference,
+    getFunctionName: getFunctionName
 }</pre></div></div>
             
         </li>

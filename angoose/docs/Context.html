@@ -29,6 +29,11 @@
               </a>
             
               
+              <a class="source" href="Pipeline.html">
+                Pipeline.js
+              </a>
+            
+              
               <a class="source" href="Principal.html">
                 Principal.js
               </a>
@@ -78,8 +83,13 @@
             </div>
             
             <div class="content"><div class='highlight'><pre><span class="keyword">var</span> Principal = require(<span class="string">"./Principal"</span>);
+<span class="keyword">var</span> seqnum = <span class="number">100</span>;
 <span class="function"><span class="keyword">function</span> <span class="title">Context</span><span class="params">(properties)</span>{</span>
-    <span class="keyword">var</span> props = properties;</pre></div></div>
+    <span class="keyword">this</span>.seqnum =  properties.seqnum || (++seqnum);
+    <span class="keyword">var</span> props = properties;
+    
+    <span class="keyword">this</span>.request = props.request;
+    <span class="keyword">this</span>.response = props.response;</pre></div></div>
             
         </li>
         
@@ -126,13 +136,20 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-4">&#182;</a>
               </div>
-              <p><strong> getSession </strong></p>
-<p>Returns the current session object</p>
+              <p><strong> getInvocation </strong></p>
+<p>Returns the invocation object associated with current context</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="keyword">this</span>.getSession = <span class="function"><span class="keyword">function</span><span class="params">()</span>{</span>
-        <span class="keyword">return</span> props.session;
+            <div class="content"><div class='highlight'><pre>    <span class="keyword">this</span>.getInvocation = <span class="function"><span class="keyword">function</span><span class="params">()</span>{</span>
+        <span class="keyword">return</span> <span class="keyword">this</span>.invocation;
+    }
+    
+    <span class="keyword">this</span>.setUser = <span class="function"><span class="keyword">function</span><span class="params">(userId, username, roles)</span>{</span>
+        <span class="keyword">this</span>.setPrincipal( <span class="keyword">new</span> Principal(userId, username, roles))
+    }
+    <span class="keyword">this</span>.setPrincipal = <span class="function"><span class="keyword">function</span><span class="params">(principal)</span>{</span>
+        props.principal = principal;
     }</pre></div></div>
             
         </li>
@@ -144,8 +161,7 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-5">&#182;</a>
               </div>
-              <p><strong> getPrincipal </strong> </p>
-<p>Returns the <a href="Principal.html">Principal</a> object representing currently logged in user</p>
+              <p>not used yet</p>
 
             </div>
             
@@ -158,6 +174,10 @@
             props.principal = <span class="keyword">new</span> Principal(user._id, user.email, user.type);
         }
         <span class="keyword">return</span> props.principal;   
+    }
+    
+    <span class="keyword">this</span>.toString = <span class="function"><span class="keyword">function</span><span class="params">()</span>{</span>
+        <span class="keyword">return</span> <span class="string">"[Context@"</span>+ <span class="keyword">this</span>.seqnum+<span class="string">"]"</span>
     }
 }
 

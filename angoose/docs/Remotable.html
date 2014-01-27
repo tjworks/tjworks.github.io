@@ -29,6 +29,11 @@
               </a>
             
               
+              <a class="source" href="Pipeline.html">
+                Pipeline.js
+              </a>
+            
+              
               <a class="source" href="Principal.html">
                 Principal.js
               </a>
@@ -174,10 +179,7 @@ All classes created using this method is a subclass of <code>Remotable</code></p
         <span class="keyword">if</span>(subClass[prop]) {
             logger.warn(<span class="string">"Cannot mixin subclass: property '"</span>+ prop+<span class="string">"' already exists on subclass"</span>);
             <span class="keyword">throw</span> <span class="string">"Subclass already has property '"</span>+ prop+<span class="string">"' defined."</span>;
-        }
-        logger.trace(<span class="string">"Mixing: "</span>, prop)
-        subClass[prop] = val;
-    }</pre></div></div>
+        }</pre></div></div>
             
         </li>
         
@@ -187,6 +189,22 @@ All classes created using this method is a subclass of <code>Remotable</code></p
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>logger.trace(&quot;Mixing: &quot;, prop)</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        subClass[prop] = val;
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
               </div>
               <p>subClass.extend = extend;
 subClass.getContext = getContext;</p>
@@ -209,11 +227,11 @@ subClass.getContext = getContext;</p>
         </li>
         
         
-        <li id="section-5">
+        <li id="section-6">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-5">&#182;</a>
+                <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
               <p>Remotable.prototype._angoosemeta = {};</p>
 

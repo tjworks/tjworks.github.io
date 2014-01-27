@@ -29,6 +29,11 @@
               </a>
             
               
+              <a class="source" href="Pipeline.html">
+                Pipeline.js
+              </a>
+            
+              
               <a class="source" href="Principal.html">
                 Principal.js
               </a>
@@ -87,7 +92,8 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-2">&#182;</a>
               </div>
-              <p>This class encapsulates authenticated user information. 
+              <p> This is currently not used as of 0.2.14</p>
+<p>This class encapsulates authenticated user information. 
 To obtain an instance of this object, you may use <code>getContext</code> method
 defined on the Model/Service class or instance:</p>
 <pre><code>MySchema.methods.updateStatus = function(){
@@ -102,7 +108,7 @@ defined on the Model/Service class or instance:</p>
     <span class="keyword">var</span> user = {
         _id: userId,
         username: username,
-        roles:roles
+        roles: Array.isArray(roles)?roles: [roles]
     }</pre></div></div>
             
         </li>
